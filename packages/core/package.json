@@ -16,5 +16,8 @@
   ],
   "keywords": [],
   "author": "whisper",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@whisper/types": "workspace:^"
+  }
 }

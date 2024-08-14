@@ -18,9 +18,19 @@ importers:
         specifier: ^4.9.4
         version: 4.9.4
 
-  packages/core: {}
+  packages/core:
+    dependencies:
+      '@whisper/types':
+        specifier: workspace:^
+        version: link:../types
 
-  packages/performance: {}
+  packages/performance:
+    dependencies:
+      '@whisper/core':
+        specifier: workspace:^
+        version: link:../core
+
+  packages/types: {}
 
 packages:
 
