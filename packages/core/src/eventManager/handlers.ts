@@ -8,9 +8,7 @@ export function handleClickEvent(data: any) {
 // JavaScript 错误事件的处理函数
 export function handleJSErrorEvent(ev: any) {
   const target = ev.target;
-
   console.error(target);
-
   reporter.report(ev);
 }
 
