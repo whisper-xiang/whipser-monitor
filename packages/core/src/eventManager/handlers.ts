@@ -1,5 +1,4 @@
-// eventWatchers.ts
-
+import { reporter } from "../reporter";
 // 点击事件的处理函数
 export function handleClickEvent(data: any) {
   console.log("Click event captured:", data);
@@ -7,9 +6,12 @@ export function handleClickEvent(data: any) {
 }
 
 // JavaScript 错误事件的处理函数
-export function handleJSErrorEvent(data: any) {
-  console.error("JavaScript error captured:", data);
-  // 在这里处理 JavaScript 错误的具体逻辑
+export function handleJSErrorEvent(ev: any) {
+  const target = ev.target;
+
+  console.error(target);
+
+  reporter.report(ev);
 }
 
 // XHR 成功事件的处理函数

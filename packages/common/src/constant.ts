@@ -1,5 +1,3 @@
-// events.ts
-
 export enum MonitoringEventType {
   // HTTP 相关事件
   XHR = "xhr",

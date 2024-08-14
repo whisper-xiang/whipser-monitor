@@ -1,7 +1,7 @@
 // eventManager.ts
 
-import { eventBus } from "../utils/eventBus";
-import { MonitoringEventType } from "../utils/enum";
+import { eventBus } from "@whisper/utils";
+import { MonitoringEventType } from "@whisper/common";
 import {
   handleClickEvent,
   handleJSErrorEvent,
@@ -18,7 +18,9 @@ import {
   handlePerformanceEvent,
   handleRecordScreenEvent,
   handleWhiteScreenEvent,
-} from "./eventHandlers";
+} from "./handlers";
+
+import { registerErrorWatchers } from "./watchers";
 
 // 事件处理函数的类型
 type EventHandler = (data: any) => void;
@@ -31,12 +33,12 @@ interface EventConfig {
 // 事件配置数组
 const eventConfigs: EventConfig[] = [
   {
-    type: MonitoringEventType.CLICK,
-    handler: handleClickEvent,
-  },
-  {
     type: MonitoringEventType.ERROR,
     handler: handleJSErrorEvent,
+  },
+  {
+    type: MonitoringEventType.CLICK,
+    handler: handleClickEvent,
   },
   {
     type: MonitoringEventType.XHR,
@@ -97,6 +99,8 @@ function registerEventWatchers() {
   eventConfigs.forEach((config) => {
     eventBus.subscribe(config.type, config.handler);
   });
+
+  registerErrorWatchers();
 }
 
 export default {

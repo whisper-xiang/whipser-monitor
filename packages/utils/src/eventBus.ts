@@ -1,5 +1,3 @@
-// eventBus.ts
-
 type Callback = (data: any) => void;
 
 class EventBus {
@@ -28,6 +26,12 @@ class EventBus {
     if (!this.events.has(eventType)) return;
     const callbackArray = this.events.get(eventType)!;
     callbackArray.forEach((callback) => callback(data));
+  }
+
+  public notify(eventType: string, data: any) {
+    if (this.events.has(eventType)) {
+      this.publish(eventType, data);
+    }
   }
 }
 
