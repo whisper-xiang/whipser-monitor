@@ -8,13 +8,13 @@ export function handleClickEvent(data: any) {
 // JavaScript 错误事件的处理函数
 export function handleJSErrorEvent(ev: any) {
   const target = ev.target;
-  console.error(target);
+  console.error("监控捕捉到了：JavaScript 错误事件", ev, target);
   reporter.report(ev);
 }
 
 // XHR 成功事件的处理函数
-export function handleXHRSuccessEvent(data: any) {
-  console.log("XHR success event captured:", data);
+export function handleXHREvent(data: any) {
+  console.log("监控捕捉到了：XHR  event captured:", data);
   // 在这里处理 XHR 成功事件的具体逻辑
 }
 
@@ -38,7 +38,7 @@ export function handleHashChangeEvent(data: any) {
 
 // Unhandled Rejection 事件的处理函数
 export function handleUnhandledRejectionEvent(data: any) {
-  console.error("Unhandled Rejection captured:", data);
+  console.error("监控捕捉到了： Unhandled Rejection event captured :", data);
   // 在这里处理未处理的 Promise 拒绝事件的具体逻辑
 }
 

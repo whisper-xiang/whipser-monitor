@@ -5,7 +5,7 @@ import { MonitoringEventType } from "@whisper/common";
 import {
   handleClickEvent,
   handleJSErrorEvent,
-  handleXHRSuccessEvent,
+  handleXHREvent,
   handleFetchEvent,
   handleHistoryEvent,
   handleHashChangeEvent,
@@ -20,7 +20,7 @@ import {
   handleWhiteScreenEvent,
 } from "./handlers";
 
-import { registerErrorWatchers } from "./watchers";
+import { registerErrorWatchers, registerXHRWatchers } from "./watchers";
 
 // 事件处理函数的类型
 type EventHandler = (data: any) => void;
@@ -37,12 +37,12 @@ const eventConfigs: EventConfig[] = [
     handler: handleJSErrorEvent,
   },
   {
-    type: MonitoringEventType.CLICK,
-    handler: handleClickEvent,
+    type: MonitoringEventType.XHR,
+    handler: handleXHREvent,
   },
   {
-    type: MonitoringEventType.XHR,
-    handler: handleXHRSuccessEvent,
+    type: MonitoringEventType.CLICK,
+    handler: handleClickEvent,
   },
   {
     type: MonitoringEventType.FETCH,
@@ -101,6 +101,7 @@ function registerEventWatchers() {
   });
 
   registerErrorWatchers();
+  registerXHRWatchers();
 }
 
 export default {

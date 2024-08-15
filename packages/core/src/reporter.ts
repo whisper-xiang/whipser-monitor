@@ -35,6 +35,8 @@ class Reporter {
       headers: {
         "Content-Type": "application/json",
       },
+    }).then((response) => {
+      console.info("监控上报成功");
     });
 
     // switch (reportOptions.method) {
