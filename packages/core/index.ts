@@ -26,7 +26,7 @@ const init = (options: Options) => {
 };
 
 // 插件插槽
-const use = (plugin: any, option: any) => {
+const use = (plugin: any, option?: any) => {
   const instance = new plugin(option);
   eventBus.subscribe(instance.type, instance.handleEvent);
   instance?.install({ options: optionsManager.getOptions() });

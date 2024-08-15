@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
 defineProps<{ msg: string }>();
 
 const codeErr = () => {
@@ -50,6 +52,18 @@ const xhrError = () => {
   ajax.send();
   ajax.addEventListener('loadend', () => { });
 }
+
+const visible = ref(false);
+const playScreen = () => {
+  visible.value = true;
+  new rrwebPlayer({
+    target: document.getElementById('revert'),
+    props: {
+      events,
+      UNSAFE_replayCanvas: true
+    }
+  });
+}
 </script>
 
 <template>
@@ -57,16 +71,28 @@ const xhrError = () => {
   <el-button type="danger" @click="promiseErr">promise错误</el-button>
   <el-button type="info" @click="xhrError">xhr请求报错</el-button>
   <el-button type="primary">点击触发</el-button>
+  <el-button type="success" @click="playScreen">播放录屏</el-button>
   <!-- <el-button type="primary" @click="performance">performance</el-button> -->
   <!-- <el-button type="success" @click="asyncError">异步错误</el-button> -->
   <!-- <el-button type="danger" @click="promiseErr">promise错误</el-button>
   <el-button type="info" @click="xhrError">xhr请求报错</el-button>
   <el-button type="warning" @click="fetchError">fetch请求报错</el-button> -->
   <el-button type="danger" @click="resourceError">加载资源报错</el-button>
+
+
+  <div id="revert" ref="revert"></div>
+  <!-- <el-dialog title="性能监控" :visible.sync="visible">
+    <div id="revert" ref="revert" style="width: 80vw; height: 10vh;"></div>
+  </el-dialog> -->
 </template>
 
 <style scoped>
 .read-the-docs {
   color: #888;
+}
+
+#revert {
+  width: 100%;
+  display: flex;
 }
 </style>
