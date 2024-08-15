@@ -49,3 +49,15 @@ export const registerXHRWatchers = () => {
 
   eventBus.notify(MonitoringEventType.XHR, "xhrWatchers");
 };
+
+export const registerClickWatchers = () => {
+  if (!window.addEventListener) return;
+
+  window.addEventListener(
+    "click",
+    function (this: any): void {
+      eventBus.notify(MonitoringEventType.CLICK, this);
+    },
+    true
+  );
+};

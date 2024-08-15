@@ -20,7 +20,11 @@ import {
   handleWhiteScreenEvent,
 } from "./handlers";
 
-import { registerErrorWatchers, registerXHRWatchers } from "./watchers";
+import {
+  registerErrorWatchers,
+  registerXHRWatchers,
+  registerClickWatchers,
+} from "./watchers";
 
 // 事件处理函数的类型
 type EventHandler = (data: any) => void;
@@ -102,6 +106,7 @@ function registerEventWatchers() {
 
   registerErrorWatchers();
   registerXHRWatchers();
+  registerClickWatchers();
 }
 
 export default {

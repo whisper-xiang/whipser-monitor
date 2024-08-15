@@ -1,8 +1,21 @@
 import { reporter } from "../reporter";
+import { userBehaviorStack } from "../userBehaviorStack";
+import { htmlElementAsString } from "@whisper/utils";
+import { MonitoringEventType } from "@whisper/common";
+
 // 点击事件的处理函数
 export function handleClickEvent(data: any) {
   console.log("Click event captured:", data);
   // 在这里处理点击事件的具体逻辑
+  const htmlString = htmlElementAsString(
+    data.document.activeElement as HTMLElement
+  );
+  if (htmlString) {
+    console.log("Clicked element:", htmlString);
+
+    userBehaviorStack.push(MonitoringEventType.CLICK, htmlString);
+    console.log("User behavior stack:", userBehaviorStack.getStack());
+  }
 }
 
 // JavaScript 错误事件的处理函数
