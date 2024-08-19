@@ -64,6 +64,14 @@ const playScreen = () => {
     }
   });
 }
+
+const unhandledrejection = () => {
+  new Promise((resolve, reject) => {
+    reject('Something went wrong');
+  }).then(result => {
+    console.log(result);
+  });
+}
 </script>
 
 <template>
@@ -72,12 +80,14 @@ const playScreen = () => {
   <el-button type="info" @click="xhrError">xhr请求报错</el-button>
   <el-button type="primary">点击触发</el-button>
   <el-button type="success" @click="playScreen">播放录屏</el-button>
+  <el-button type="success" @click="unhandledrejection">unhandledrejection</el-button>
+  <el-button type="danger" @click="resourceError">加载资源报错</el-button>
+
   <!-- <el-button type="primary" @click="performance">performance</el-button> -->
   <!-- <el-button type="success" @click="asyncError">异步错误</el-button> -->
   <!-- <el-button type="danger" @click="promiseErr">promise错误</el-button>
   <el-button type="info" @click="xhrError">xhr请求报错</el-button>
   <el-button type="warning" @click="fetchError">fetch请求报错</el-button> -->
-  <el-button type="danger" @click="resourceError">加载资源报错</el-button>
 
 
   <div id="revert" ref="revert"></div>

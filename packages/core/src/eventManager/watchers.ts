@@ -11,11 +11,6 @@ export const registerErrorWatchers = () => {
     },
     true
   );
-  window.addEventListener(
-    MonitoringEventType.UNHANDLED_REJECTION,
-    (e) => eventBus.notify(MonitoringEventType.UNHANDLED_REJECTION, e),
-    true
-  );
 };
 
 export const registerXHRWatchers = () => {
@@ -61,3 +56,18 @@ export const registerClickWatchers = () => {
     true
   );
 };
+
+export const unhandledrejection = () => {
+  if (!window.addEventListener) return;
+
+  window.addEventListener("unhandledrejection", function (e: any): void {
+    eventBus.notify(MonitoringEventType.UNHANDLED_REJECTION, e); // 这里的类型是 any
+  });
+};
+
+export const registerWatchers = [
+  unhandledrejection,
+  registerErrorWatchers,
+  registerXHRWatchers,
+  registerClickWatchers,
+];

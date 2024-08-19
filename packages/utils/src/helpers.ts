@@ -39,3 +39,8 @@ export function htmlElementAsString(target: HTMLElement): string {
     classNames !== "" ? classNames : ""
   }>${innerText}</${tagName}>`;
 }
+
+// 获取当前的时间戳
+export function getTimestamp(): number {
+  return Date.now();
+}

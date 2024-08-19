@@ -20,11 +20,7 @@ import {
   handleWhiteScreenEvent,
 } from "./handlers";
 
-import {
-  registerErrorWatchers,
-  registerXHRWatchers,
-  registerClickWatchers,
-} from "./watchers";
+import { registerWatchers } from "./watchers";
 
 // 事件处理函数的类型
 type EventHandler = (data: any) => void;
@@ -104,9 +100,10 @@ function registerEventWatchers() {
     eventBus.subscribe(config.type, config.handler);
   });
 
-  registerErrorWatchers();
-  registerXHRWatchers();
-  registerClickWatchers();
+  // registerErrorWatchers();
+  // registerXHRWatchers();
+  // registerClickWatchers();
+  registerWatchers.forEach((watcher) => watcher());
 }
 
 export default {

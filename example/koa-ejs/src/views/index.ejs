@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Koa + EJS Project</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <h1><%= msg %></h1>
+      <el-button type="primary" onclick="codeErr()">JS 错误</el-button>
+      <el-button type="danger" onclick="promiseErr()">Promise 错误</el-button>
+      <el-button type="info" onclick="xhrError()">XHR 请求报错</el-button>
+      <el-button type="success" onclick="playScreen()">播放录屏</el-button>
+      <el-button type="success" onclick="unhandledrejection()"
+        >Unhandledrejection</el-button
+      >
+      <el-button type="danger" onclick="resourceError()"
+        >加载资源报错</el-button
+      >
+
+      <div id="revert"></div>
+    </div>
+
+    <script>
+      function codeErr() {
+        getTableData();
+        let a = undefined;
+        if (a.length) {
+          console.log("1");
+        }
+      }
+
+      function resourceError() {
+        let script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "https://abc.com/index.js";
+        document.body.appendChild(script);
+      }
+
+      function getTableData() {
+        setTimeout(() => {
+          fetch(`http://localhost:8090/getErrorList`)
+            .then((response) => response.json())
+            .then((res) => {
+              console.log(res);
+            });
+        }, 500);
+      }
+
+      function promiseErr() {
+        new Promise((resolve) => {
+          let person = {};
+          person.name.age();
+          resolve();
+        });
+      }
+
+      function xhrError() {
+        let ajax = new XMLHttpRequest();
+        ajax.open("GET", "https://abc.com/test/api");
+        ajax.setRequestHeader("content-type", "application/json");
+        ajax.onreadystatechange = function () {
+          if (ajax.readyState == 4) {
+          }
+          if (ajax.status === 200 || ajax.status === 304) {
+            console.log("ajax", ajax);
+          }
+        };
+        ajax.send();
+      }
+
+      function playScreen() {
+        new rrwebPlayer({
+          target: document.getElementById("revert"),
+          props: {
+            events,
+            UNSAFE_replayCanvas: true,
+          },
+        });
+      }
+
+      function unhandledrejection() {
+        new Promise((resolve, reject) => {
+          reject("Something went wrong");
+        }).then((result) => {
+          console.log(result);
+        });
+      }
+    </script>
+  </body>
+</html>

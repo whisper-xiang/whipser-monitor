@@ -1,5 +1,10 @@
 # Whisper Monitor
 
+```
+cd vue3
+pnpm dev
+```
+
 前端监控系统
 
 通过对xhm、fetch、click、error等事件的监听或劫持，实现数据上报。 

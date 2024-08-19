@@ -1,10 +1,16 @@
-// pkg2/src/index.ts
+import {
+  loadWatcher,
+  longTaskWatcher,
+  vitalsWatcher,
+  whiteScreenWatcher,
+} from "./watchers";
+import { PluginOptions } from "@whisper/types";
 
-import { pk1 } from "@whisper/core";
-
-function pk2() {
-  pk1();
-  console.log("I am pk2");
+export default class Performance {
+  install(options: PluginOptions) {
+    loadWatcher(); // 资源列表
+    longTaskWatcher(); // 长任务
+    vitalsWatcher(); //  FCP、FID、LCP、TTFB、CLS
+    whiteScreenWatcher(); // 页面崩溃
+  }
 }
-
-export default pk2;
