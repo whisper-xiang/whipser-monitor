@@ -14,6 +14,8 @@
     "rrweb-player": "1.0.0-alpha.4"
   },
   "dependencies": {
-    "@whisper/common": "workspace:^"
+    "@whisper/common": "workspace:^",
+    "js-base64": "^3.7.7",
+    "pako": "^2.1.0"
   }
 }

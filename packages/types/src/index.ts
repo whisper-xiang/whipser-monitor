@@ -52,7 +52,7 @@ export interface InstallablePlugin {
   new (options: PluginOptions): InstallablePluginInstance;
 }
 export interface InstallablePluginInstance {
-  install(options: CoreOptions): void;
+  install({ options }: { options: PluginOptions }): void;
   type: string;
   handleEvent(event: any): void;
 }
