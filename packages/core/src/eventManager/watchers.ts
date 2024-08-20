@@ -1,5 +1,4 @@
 // errorWatcher.ts
-
 import { eventBus, wrapMethod } from "@whisper/utils";
 import { MonitoringEventType } from "@whisper/common"; // 假设 MonitoringEventType 包含 ERROR 类型
 
@@ -14,8 +13,6 @@ export const registerErrorWatchers = () => {
 };
 
 export const registerXHRWatchers = () => {
-  console.log("xhrWatchers");
-
   if (!window.XMLHttpRequest) return;
   const originalXhrProto = XMLHttpRequest.prototype;
 
@@ -40,8 +37,6 @@ export const registerXHRWatchers = () => {
     };
   });
 
-  console.log("xhrWatchers", originalXhrProto);
-
   eventBus.notify(MonitoringEventType.XHR, "xhrWatchers");
 };
 
@@ -65,7 +60,34 @@ export const unhandledrejection = () => {
   });
 };
 
+export const historyWatcher = () => {
+  if (!window.history) return;
+  const originalHistoryProto = window.history.constructor.prototype;
+  wrapMethod(originalHistoryProto, "pushState", (originalPushState) => {
+    return function (this: any, ...args: any[]) {
+      eventBus.notify(MonitoringEventType.HISTORY, args);
+      return originalPushState.apply(this, args);
+    };
+  });
+  window.onpopstate = function (this: any): void {
+    console.log("fffffffff");
+  };
+};
+
+export const hashChangeWatchers = () => {
+  window.onpopstate = function (this: any): void {
+    console.log("fffffffff");
+  };
+  window.addEventListener("hashchange", function (this: any): void {
+    console.log("handleHashChangeEventhandleHashChangeEvent");
+
+    eventBus.notify(MonitoringEventType.HASHCHANGE, this);
+  });
+};
+
 export const registerWatchers = [
+  historyWatcher,
+  hashChangeWatchers,
   unhandledrejection,
   registerErrorWatchers,
   registerXHRWatchers,

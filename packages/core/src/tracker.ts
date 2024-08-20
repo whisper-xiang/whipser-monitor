@@ -1,4 +1,3 @@
-// reporter.ts
 interface ReportData {
   type: string;
   timestamp: number;
@@ -15,7 +14,7 @@ interface ReportOptions {
   payloadType?: "json" | "form";
 }
 
-class Reporter {
+class Tracker {
   private defaultOptions: ReportOptions = {
     method: "xhr",
     url: "/report",
@@ -118,6 +117,6 @@ class Reporter {
 }
 
 // 创建单例实例
-const reporter = new Reporter({ url: "http://localhost:8090/reportData" });
+const tracker = new Tracker({ url: "http://localhost:8090/reportData" });
 
-export { reporter };
+export { tracker };

@@ -100,9 +100,6 @@ function registerEventWatchers() {
     eventBus.subscribe(config.type, config.handler);
   });
 
-  // registerErrorWatchers();
-  // registerXHRWatchers();
-  // registerClickWatchers();
   registerWatchers.forEach((watcher) => watcher());
 }
 

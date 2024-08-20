@@ -1,4 +1,4 @@
-import { reporter } from "../reporter";
+import { tracker } from "../tracker";
 import { userBehaviorStack } from "../userBehaviorStack";
 import { htmlElementAsString } from "@whisper/utils";
 import { MonitoringEventType } from "@whisper/common";
@@ -22,13 +22,13 @@ export function handleClickEvent(data: any) {
 export function handleJSErrorEvent(ev: any) {
   const target = ev.target;
   console.error("监控捕捉到了：JavaScript 错误事件", ev, target);
-  reporter.report(ev);
+  tracker.report(ev);
 }
 
-// XHR 成功事件的处理函数
+// XHR 事件的处理函数
 export function handleXHREvent(data: any) {
   console.log("监控捕捉到了：XHR  event captured:", data);
-  // 在这里处理 XHR 成功事件的具体逻辑
+  // 在这里处理 XHR 事件的具体逻辑
 }
 
 // Fetch 事件的处理函数
@@ -39,7 +39,7 @@ export function handleFetchEvent(data: any) {
 
 // History 事件的处理函数
 export function handleHistoryEvent(data: any) {
-  console.log("History event captured:", data);
+  console.log("History event captured:", data, document.referrer);
   // 在这里处理浏览器历史记录事件的具体逻辑
 }
 
