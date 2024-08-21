@@ -30,8 +30,6 @@ const install = (Vue: VueInstance, options: CoreOptions) => {
 };
 
 const init = (options?: CoreOptions) => {
-  console.log("init core");
-
   // 初始化配置
   optionsManager.init(options);
   // 事件劫持

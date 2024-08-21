@@ -5,7 +5,7 @@ import screenRecord from "../../../packages/screenRecord/src/index";
 import router from "./router";
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
-import whisperCore from "../../../packages/core/index";
+import whisperCore from "../../../packages/core/src/core/index";
 import plugin from "./plugins/MyPlugin";
 
 const app = createApp(App);
