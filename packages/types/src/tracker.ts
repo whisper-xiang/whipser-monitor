@@ -1,9 +1,6 @@
 import { EventTypes } from "./constants";
-export interface ReportData {
+export interface ReportData<T> {
   type: EventTypes;
   timestamp: number;
-  error?: string;
-  component?: string;
-  info?: string;
-  [key: string]: any;
+  dat: T;
 }

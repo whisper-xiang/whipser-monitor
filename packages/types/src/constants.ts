@@ -2,16 +2,15 @@ export enum EventTypes {
   LIFECYCLE = 1,
   ERROR,
   PERFORMANCE,
-  API,
-  DOM,
-  ROUTE,
+  CLICK,
   CONSOLE,
   RECORD,
-  VUE,
-  CUSTOMER,
-  EXTEND,
-  WHITE_SCREEN,
   XHR,
+  API,
+  // VUE,
+  // CUSTOMER,
+  // EXTEND,
+  // WHITE_SCREEN,
 }
 
 export enum ErrorTypes {

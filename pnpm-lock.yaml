@@ -84,9 +84,6 @@ importers:
 
   packages/core:
     dependencies:
-      '@whisper/common':
-        specifier: workspace:^
-        version: link:../common
       '@whisper/screen-record':
         specifier: workspace:^
         version: link:../screenRecord
@@ -105,9 +102,6 @@ importers:
 
   packages/screenRecord:
     dependencies:
-      '@whisper/common':
-        specifier: workspace:^
-        version: link:../common
       js-base64:
         specifier: ^3.7.7
         version: 3.7.7
@@ -129,6 +123,10 @@ importers:
       '@whisper/types':
         specifier: workspace:^
         version: link:../types
+    devDependencies:
+      ua-parser-js:
+        specifier: ^1.0.38
+        version: 1.0.38
 
 packages:
 
@@ -1532,6 +1530,9 @@ packages:
     resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  ua-parser-js@1.0.38:
+    resolution: {integrity: sha512-Aq5ppTOfvrCMgAPneW1HfWj66Xi7XL+/mIy996R1/CLS/rcyJQm6QZdsKrUeivDFQ+Oc9Wyuwor8Ze8peEoUoQ==}
 
   universalify@2.0.1:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
@@ -2950,6 +2951,8 @@ snapshots:
   typescript@4.9.4: {}
 
   typescript@5.5.4: {}
+
+  ua-parser-js@1.0.38: {}
 
   universalify@2.0.1: {}
 

@@ -18,7 +18,6 @@
   "author": "whisper",
   "license": "ISC",
   "dependencies": {
-    "@whisper/common": "workspace:^",
     "@whisper/screen-record": "workspace:^",
     "@whisper/types": "workspace:^",
     "@whisper/utils": "workspace:^"

@@ -1,5 +1,4 @@
-import { EventTypes } from "../types/constant";
-import { CoreOptions, ReportData } from "@whisper/types";
+import { CoreOptions, ReportData, EventTypes } from "@whisper/types";
 import { Breadcrumb } from "./breadcrumb";
 
 type ReportOptions = CoreOptions["reportOptions"];

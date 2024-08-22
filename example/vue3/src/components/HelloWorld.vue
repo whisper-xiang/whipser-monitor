@@ -23,7 +23,6 @@ const getTableData = () => {
     fetch(`http://localhost:8090/getErrorList`)
       .then((response) => response.json())
       .then((res) => {
-        console.log(res);
 
         // this.tableData = res.data;
       });

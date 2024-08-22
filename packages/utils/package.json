@@ -11,5 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "@whisper/types": "workspace:^"
+  },
+  "devDependencies": {
+    "ua-parser-js": "^1.0.38"
   }
 }

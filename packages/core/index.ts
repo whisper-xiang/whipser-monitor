@@ -1,8 +1,8 @@
 import { Breadcrumb, EventBus, Tracker, Options } from "./src/core";
-import { Plugin, CoreOptions } from "@whisper/types";
+import { Plugin, CoreOptions, EventTypes } from "@whisper/types";
 import { isValidPlugin } from "@whisper/utils";
 
-import { jsErrorPlugin } from "./src/plugins/jsError";
+import { jsErrorPlugin, XHRPlugin } from "./src/plugins";
 
 export class Core {
   private readonly options: CoreOptions;
@@ -56,7 +56,8 @@ const init = (options: CoreOptions) => {
   const client = new Core(options);
   const { plugins = [] } = options;
 
-  client.use([jsErrorPlugin.call(client, options), ...plugins]);
+  const allPlugins = [jsErrorPlugin, XHRPlugin, ...plugins];
+  client.use(allPlugins);
   return client;
 };
 
@@ -67,7 +68,12 @@ const install = (Vue: any, options: CoreOptions) => {
   const originalErrorHandler = Vue.config.errorHandler;
 
   Vue.config.errorHandler = (err: Error, vm: any, info: string) => {
-    const errData = client.jsErrorPlugin?.transform(err, vm, info);
+    const errData = client.jsErrorPlugin.transform.call(client, {
+      type: EventTypes.ERROR,
+      data: {
+        error: err,
+      },
+    });
     client.tracker.report(errData);
 
     if (originalErrorHandler) {
