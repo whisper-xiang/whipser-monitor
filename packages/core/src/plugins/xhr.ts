@@ -1,50 +1,59 @@
 import { overrideOriginal } from "@whisper/utils";
 import { EventTypes, ErrorTypes } from "@whisper/types";
 
-const XHRPlugin = {
-  name: "XHRPlugin",
-  monitor(emit: (data) => void) {
-    if (!window.XMLHttpRequest) return;
-    const originalXhrProto = XMLHttpRequest.prototype;
+function XHRPlugin() {
+  const originalXhrProto = XMLHttpRequest.prototype;
 
-    overrideOriginal(originalXhrProto, "open", (originalOpen) => {
-      return function (this: any, ...args: any[]) {
-        this._xhr = {
-          ...args,
+  return {
+    name: "XHRPlugin",
+    monitor(emit: (data) => void) {
+      if (!window.XMLHttpRequest) return;
+      const tracker = this.tracker;
+
+      const { isSdkTransportUrl } = this.tracker;
+      overrideOriginal(originalXhrProto, "open", function (originalOpen) {
+        return function (this: any, ...args: any[]) {
+          this._xhr = {
+            method: args[0],
+            url: args[1],
+            async: args[2],
+          };
+          return originalOpen.apply(this, args);
         };
-        return originalOpen.apply(this, args);
-      };
-    });
+      });
 
-    overrideOriginal(originalXhrProto, "send", (originalSend) => {
-      return function (this: any, ...args: any[]) {
-        const _xhr = this._xhr;
-        this.addEventListener("loadend", function (_this: any) {
-          console.log(this);
-          emit({
-            type: EventTypes.XHR,
-            data: _xhr,
+      overrideOriginal(originalXhrProto, "send", function (originalSend) {
+        return function (this: any, ...args: any[]) {
+          const _xhr = this._xhr;
+
+          this.addEventListener("loadend", function (event) {
+            if (!isSdkTransportUrl.call(tracker, this._xhr.url)) {
+              emit({
+                type: EventTypes.XHR,
+                data: _xhr,
+              });
+            }
           });
-        });
 
-        return originalSend.apply(this, args);
+          return originalSend.apply(this, args);
+        };
+      });
+    },
+    transform(collectedData) {
+      this.breadcrumb.unshift({
+        bt: EventTypes.XHR,
+        t: +new Date(),
+      });
+
+      return {
+        t: +new Date(),
+        e: EventTypes.API,
+        dat: {
+          ...collectedData,
+        },
       };
-    });
-  },
-  transform(collectedData) {
-    this.breadcrumb.unshift({
-      bt: EventTypes.XHR,
-      t: +new Date(),
-    });
-
-    return {
-      t: +new Date(),
-      e: EventTypes.API,
-      dat: {
-        ...collectedData,
-      },
-    };
-  },
-};
+    },
+  };
+}
 
 export { XHRPlugin };

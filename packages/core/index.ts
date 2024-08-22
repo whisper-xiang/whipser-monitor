@@ -56,7 +56,7 @@ const init = (options: CoreOptions) => {
   const client = new Core(options);
   const { plugins = [] } = options;
 
-  const allPlugins = [jsErrorPlugin, XHRPlugin, ...plugins];
+  const allPlugins = [jsErrorPlugin, XHRPlugin.call(client), ...plugins];
   client.use(allPlugins);
   return client;
 };

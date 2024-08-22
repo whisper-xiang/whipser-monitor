@@ -130,4 +130,9 @@ export class Tracker {
     // TODO: 其他附加数据
     return data;
   }
+
+  // 判断是否为 SDK 传输地址
+  public isSdkTransportUrl(targetUrl: string): boolean {
+    return targetUrl.includes(this.options?.url);
+  }
 }
