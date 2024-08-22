@@ -11,6 +11,7 @@ export enum EventTypes {
   CUSTOMER,
   EXTEND,
   WHITE_SCREEN,
+  XHR,
 }
 
 export enum ErrorTypes {
