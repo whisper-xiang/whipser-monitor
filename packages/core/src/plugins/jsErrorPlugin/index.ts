@@ -26,7 +26,7 @@ const jsErrorPlugin: Plugin = {
   watcher(collectedData: CollectedType) {
     const { stkLimit = 5 } = this.options?.codeErrorOptions;
     const { type, data } = collectedData;
-    const { localName, src, href } = (data.target as ResourceTarget) || {};
+    const { localName, src, href } = (data?.target as ResourceTarget) || {};
 
     // 资源加载错误
     if (localName) {

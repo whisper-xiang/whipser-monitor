@@ -1,13 +1,13 @@
-import { Breadcrumb, EventBus, Tracker, Options } from "./src/core";
+import { Breadcrumb, eventBus, Tracker, Options } from "./src/core";
 import { Plugin, CoreOptions, EventTypes } from "@whisper/types";
 import { isValidPlugin } from "@whisper/utils";
 
 import { jsErrorPlugin, XHRPlugin } from "./src/plugins";
 
 export class Core {
-  private readonly options: CoreOptions;
   private readonly breadcrumb: Breadcrumb;
   public readonly tracker: Tracker;
+  public readonly options: CoreOptions;
 
   [key: string]: any;
 
@@ -18,8 +18,6 @@ export class Core {
   }
 
   use(plugins: Plugin[]) {
-    const eventBus = new EventBus();
-
     for (const plugin of plugins) {
       const { name: pluginName, observer, watcher } = plugin || {};
 
@@ -44,8 +42,11 @@ export class Core {
 
       const callback = (...args: any[]) => {
         const pluginData = watcher.apply(this, args);
+        if (!pluginData) {
+          return;
+        }
         this.tracker.report(pluginData).then(() => {
-          console.log("上报成功");
+          console.log("上报成功", this.breadcrumb.getStack());
         });
       };
 
@@ -56,7 +57,7 @@ export class Core {
 // 导出 init 方法
 const init = (options: CoreOptions) => {
   const client = new Core(options);
-  const { plugins = [] } = options;
+  const { plugins = [] } = client.options;
 
   client.use([jsErrorPlugin, XHRPlugin, ...plugins]);
   return client;
@@ -69,13 +70,9 @@ const install = (Vue: any, options: CoreOptions) => {
   const originalErrorHandler = Vue.config.errorHandler;
 
   Vue.config.errorHandler = (err: Error, vm: any, info: string) => {
-    const errData = client.jsErrorPlugin.watcher.call(client, {
-      type: EventTypes.ERROR,
-      data: {
-        error: err,
-      },
-    });
-    client.tracker.report(errData);
+    console.log(eventBus.deps, client);
+
+    eventBus.emit("jsErrorPlugin", { type: EventTypes.ERROR, data: err });
 
     if (originalErrorHandler) {
       originalErrorHandler.call(this, err, vm, info);

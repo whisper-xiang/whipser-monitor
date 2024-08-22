@@ -15,7 +15,7 @@ export class Options {
   breadcrumbOptions?: CoreOptions["breadcrumbOptions"] = {
     maxBreadcrumbs: 100, // 面包屑最大层级
   };
-  plugins: Plugin[] = [clickPlugin, XHRPlugin];
+  plugins: Plugin[] = [clickPlugin];
 
   constructor(options: CoreOptions) {
     const { reportOptions, plugins } = options;
@@ -23,7 +23,7 @@ export class Options {
     reportOptions && (this.reportOptions = reportOptions);
 
     if (validateOption(plugins, "plugins", "array")) {
-      plugins?.length && (this.plugins = plugins);
+      plugins?.length && this.plugins.push(...plugins);
     }
   }
 }

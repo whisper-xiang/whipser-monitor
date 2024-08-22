@@ -7,18 +7,18 @@ export type UnknownFunc = (...args: unknown[]) => void;
  * @class EventBus
  * @template T 事件枚举
  */
-export class EventBus {
-  events: Map<string, UnknownFunc[]> = new Map();
+class EventBus {
+  deps: Map<string, UnknownFunc[]> = new Map();
   on(eventName: string, callBack: (data: any) => any) {
-    const fns = this.events.get(eventName);
+    const fns = this.deps.get(eventName);
     if (fns) {
-      this.events.set(eventName, fns.concat(callBack));
+      this.deps.set(eventName, fns.concat(callBack));
       return;
     }
-    this.events.set(eventName, [callBack]);
+    this.deps.set(eventName, [callBack]);
   }
   emit<D = any>(eventName: string, data: D) {
-    const fns = this.events.get(eventName);
+    const fns = this.deps.get(eventName);
     if (!eventName || !fns) return;
     fns.forEach((fn) => {
       try {
@@ -29,3 +29,5 @@ export class EventBus {
     });
   }
 }
+
+export const eventBus = new EventBus();
