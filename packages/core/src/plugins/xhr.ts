@@ -1,4 +1,4 @@
-import { overrideOriginal } from "../utils";
+import { overrideOriginal } from "@whisper/utils";
 import { EventTypes, ErrorTypes } from "../types/constant";
 
 function XHRPlugin() {

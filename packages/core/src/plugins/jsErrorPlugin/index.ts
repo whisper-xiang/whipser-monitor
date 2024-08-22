@@ -1,5 +1,5 @@
-import { EventTypes, ErrorTypes } from "../types/constant";
-import { parseStackFrames } from "../utils/parseErrorStk";
+import { EventTypes, ErrorTypes } from "@whisper/types";
+import { parseStackFrames } from "./helpers";
 
 interface CollectedType {
   type: EventTypes;

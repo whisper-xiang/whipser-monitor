@@ -1,23 +1,24 @@
+import { BreadcrumbItem, CoreOptions } from "@whisper/types";
+
+// type BreadcrumbOptions = CoreOptions["breadcrumbOptions"];
+
 export class Breadcrumb {
   private readonly maxBreadcrumbs: number;
-  private stack = [];
-  constructor(options) {
-    this.maxBreadcrumbs = options.maxBreadcrumbs || 80;
+  private stack: BreadcrumbItem[] = [];
+
+  constructor(options: CoreOptions) {
+    this.maxBreadcrumbs = options?.breadcrumbOptions?.maxBreadcrumbs || 10;
     this.stack = [];
   }
   /**
    * 添加用户行为栈
-   * @param {BreadcrumbPushData} data
+   * @param {BreadcrumbPushData} BreadcrumbItem
    */
-  unshift(data) {
-    // if (!data.l) {
-    //   data.l = BreadcrumbLevel.INFO;
-    // }
+  unshift(data: BreadcrumbItem) {
     if (this.stack.length >= this.maxBreadcrumbs) {
       this.pop();
     }
     this.stack.unshift(data);
-    // this.stack.sort((a, b) => b.t - a.t);
     return this.stack;
   }
 

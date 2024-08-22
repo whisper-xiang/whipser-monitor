@@ -1,55 +1,82 @@
-import {
-  VueInstance,
-  CoreOptions,
-  PluginOptions,
-  InstallablePlugin,
-  InstallablePluginInstance,
-} from "@whisper/types";
-import optionsManager from "./src/optionsManager";
-import eventManager from "./src/eventManager";
-import { handleJSErrorEvent } from "./src/eventManager/handlers";
-import { eventBus } from "@whisper/utils";
-import { userBehaviorStack } from "./src/userBehaviorStack";
+import { Breadcrumb, EventBus, Tracker, Options } from "./src/core";
+import { Plugin, CoreOptions } from "@whisper/types";
+import { isValidPlugin } from "@whisper/utils";
 
-// 如果通过install方式安装，则意味着是作为vue插件引入，否则直接调用init使用
-const install = (Vue: VueInstance, options: CoreOptions) => {
-  // Vue.config.globalProperties.$router.beforeEach((to, from, next) => {
-  //   console.log("Routing from:", from.fullPath);
-  //   console.log("Routing to:", to.fullPath);
-  //   document.referrer && console.log("Referer:", document.referrer);
-  //   // 记录 refer 信息
-  //   next();
-  // });
+import { jsErrorPlugin } from "./src/plugins/jsError";
+
+export class Core {
+  private readonly options: CoreOptions;
+  private readonly breadcrumb: Breadcrumb;
+  public readonly tracker: Tracker;
+
+  [key: string]: any;
+
+  constructor(options: CoreOptions) {
+    this.options = new Options(options);
+    this.breadcrumb = new Breadcrumb(this.options);
+    this.tracker = new Tracker(this.options, this.breadcrumb);
+  }
+
+  use(plugins: Plugin[]) {
+    const eventBus = new EventBus();
+
+    for (const plugin of plugins) {
+      const { name: pluginName, monitor, transform } = plugin || {};
+
+      // 验证插件的有效性
+      if (!isValidPlugin(pluginName, monitor, transform)) {
+        console.error(`The plugin name [${name}] is invalid, please check it.`);
+        continue;
+      }
+
+      this[pluginName] = plugin;
+
+      try {
+        monitor.call(this, eventBus.emit.bind(eventBus, pluginName));
+      } catch (error) {
+        console.error(
+          `The plugin [${pluginName}] encountered an error: ${error.message}`
+        );
+        continue;
+      }
+
+      const callback = (...args: any[]) => {
+        const pluginData = transform.apply(this, args);
+        this.tracker.report(pluginData).then(() => {
+          console.log("上报成功");
+        });
+      };
+
+      eventBus.on(pluginName, callback);
+    }
+  }
+}
+// 导出 init 方法
+const init = (options: CoreOptions) => {
+  const client = new Core(options);
+  const { plugins = [] } = options;
+
+  client.use([jsErrorPlugin.call(client, options), ...plugins]);
+  return client;
+};
+
+// 如果通过 install 方式安装，则作为 Vue 插件引入
+const install = (Vue: any, options: CoreOptions) => {
+  const client = init(options);
 
   const originalErrorHandler = Vue.config.errorHandler;
-  Vue.config.errorHandler = (err: Error, vm: VueInstance, info: string) => {
-    handleJSErrorEvent(err);
-    originalErrorHandler && originalErrorHandler.call(this, err, vm, info);
+
+  Vue.config.errorHandler = (err: Error, vm: any, info: string) => {
+    const errData = client.jsErrorPlugin?.transform(err, vm, info);
+    client.tracker.report(errData);
+
+    if (originalErrorHandler) {
+      originalErrorHandler.call(this, err, vm, info);
+    }
   };
-  init(options);
-};
-
-const init = (options?: CoreOptions) => {
-  // 初始化配置
-  optionsManager.init(options);
-  // 事件劫持
-  eventManager.registerEventWatchers();
-};
-
-// 插件插槽
-const use = (Plugin: InstallablePlugin, options?: PluginOptions): void => {
-  const instance: InstallablePluginInstance = new Plugin(options || {});
-  instance.type && eventBus.subscribe(instance.type, instance.handleEvent);
-
-  const pluginParams = {
-    options: optionsManager.getOptions(),
-    userBehaviorStack,
-  };
-  instance.install(pluginParams);
 };
 
 export default {
   install,
   init,
-  use,
 };

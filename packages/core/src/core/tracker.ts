@@ -1,15 +1,6 @@
 import { EventTypes } from "../types/constant";
-import { CoreOptions } from "../types/core";
+import { CoreOptions, ReportData } from "@whisper/types";
 import { Breadcrumb } from "./breadcrumb";
-
-interface ReportData {
-  type: EventTypes;
-  timestamp: number;
-  error?: string;
-  component?: string;
-  info?: string;
-  [key: string]: any;
-}
 
 type ReportOptions = CoreOptions["reportOptions"];
 export class Tracker {
@@ -83,23 +74,25 @@ export class Tracker {
   }
 
   // 使用 Fetch API 方式上报
-  private reportWithFetch(data: ReportData, options: ReportOptions) {
-    return fetch(options.url, {
-      method: "POST",
-      headers: {
-        ...options.headers,
-        "Content-Type":
+  private async reportWithFetch(data: ReportData, options: ReportOptions) {
+    try {
+      return await fetch(options.url, {
+        method: "POST",
+        headers: {
+          ...options.headers,
+          "Content-Type":
+            options.payloadType === "json"
+              ? "application/json"
+              : "application/x-www-form-urlencoded",
+        },
+        body:
           options.payloadType === "json"
-            ? "application/json"
-            : "application/x-www-form-urlencoded",
-      },
-      body:
-        options.payloadType === "json"
-          ? JSON.stringify(data)
-          : this.toFormData(data),
-    }).catch((error) => {
+            ? JSON.stringify(data)
+            : this.toFormData(data),
+      });
+    } catch (error) {
       console.error("Fetch report failed:", error);
-    });
+    }
   }
 
   // 使用 Beacon API 方式上报
@@ -135,6 +128,7 @@ export class Tracker {
       data.breadcrumb = this.breadcrumb.getStack(); // 获取用户行为栈
     }
     data.timestamp = Date.now(); // 记录时间戳
+    // TODO: 其他附加数据
     return data;
   }
 }
