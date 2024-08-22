@@ -3,8 +3,8 @@
 function lifeCyclePlugin() {
   return {
     name: "lifeCyclePlugin",
-    monitor() {},
-    transform() {},
+    observer() {},
+    watcher() {},
   };
 }
 

@@ -3,8 +3,8 @@
 function historyPlugin() {
   return {
     name: "historyPlugin",
-    monitor() {},
-    transform() {},
+    observer() {},
+    watcher() {},
   };
 }
 

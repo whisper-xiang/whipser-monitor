@@ -2,8 +2,8 @@
 function fetchPlugin() {
   return {
     name: "fetchPlugin",
-    monitor() {},
-    transform() {},
+    observer() {},
+    watcher() {},
   };
 }
 

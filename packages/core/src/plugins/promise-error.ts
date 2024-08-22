@@ -3,8 +3,8 @@
 function promiseErrorPlugin(client: any) {
   return {
     name: "promiseErrorPlugin",
-    monitor() {},
-    transform() {},
+    observer() {},
+    watcher() {},
   };
 }
 

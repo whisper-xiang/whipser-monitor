@@ -21,18 +21,20 @@ export class Core {
     const eventBus = new EventBus();
 
     for (const plugin of plugins) {
-      const { name: pluginName, monitor, transform } = plugin || {};
+      const { name: pluginName, observer, watcher } = plugin || {};
 
       // 验证插件的有效性
-      if (!isValidPlugin(pluginName, monitor, transform)) {
-        console.error(`The plugin name [${name}] is invalid, please check it.`);
+      if (!isValidPlugin(pluginName, observer, watcher)) {
+        console.error(
+          `The plugin name [${pluginName}] is invalid, please check it.`
+        );
         continue;
       }
 
       this[pluginName] = plugin;
 
       try {
-        monitor.call(this, eventBus.emit.bind(eventBus, pluginName));
+        observer.call(this, eventBus.emit.bind(eventBus, pluginName));
       } catch (error) {
         console.error(
           `The plugin [${pluginName}] encountered an error: ${error.message}`
@@ -41,7 +43,7 @@ export class Core {
       }
 
       const callback = (...args: any[]) => {
-        const pluginData = transform.apply(this, args);
+        const pluginData = watcher.apply(this, args);
         this.tracker.report(pluginData).then(() => {
           console.log("上报成功");
         });
@@ -68,7 +70,7 @@ const install = (Vue: any, options: CoreOptions) => {
   const originalErrorHandler = Vue.config.errorHandler;
 
   Vue.config.errorHandler = (err: Error, vm: any, info: string) => {
-    const errData = client.jsErrorPlugin.transform.call(client, {
+    const errData = client.jsErrorPlugin.watcher.call(client, {
       type: EventTypes.ERROR,
       data: {
         error: err,

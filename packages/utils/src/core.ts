@@ -1,9 +1,9 @@
 export function isValidPlugin(
   name: string | undefined,
-  monitor: Function | undefined,
-  transform: Function | undefined
+  observer: Function | undefined,
+  watcher: Function | undefined
 ): boolean {
-  return !!(name && monitor && transform);
+  return !!(name && observer && watcher);
 }
 
 export function typeofAny(target: any): string {

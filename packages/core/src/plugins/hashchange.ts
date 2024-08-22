@@ -3,8 +3,8 @@
 function hashChangePlugin() {
   return {
     name: "hashChangePlugin",
-    monitor() {},
-    transform() {},
+    observer() {},
+    watcher() {},
   };
 }
 

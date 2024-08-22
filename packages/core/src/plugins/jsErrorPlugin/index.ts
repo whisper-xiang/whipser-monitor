@@ -9,7 +9,7 @@ interface ResourceTarget {
 
 const jsErrorPlugin: Plugin = {
   name: "jsErrorPlugin",
-  monitor(emit: (data: CollectedType) => void) {
+  observer(emit: (data: CollectedType) => void) {
     window.addEventListener(
       "error",
       (e: ErrorEvent) => {
@@ -23,7 +23,7 @@ const jsErrorPlugin: Plugin = {
       true
     );
   },
-  transform(collectedData: CollectedType) {
+  watcher(collectedData: CollectedType) {
     const { stkLimit = 5 } = this.options?.codeErrorOptions;
     const { type, data } = collectedData;
     const { localName, src, href } = (data.target as ResourceTarget) || {};

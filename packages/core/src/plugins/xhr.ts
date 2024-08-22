@@ -6,7 +6,7 @@ function XHRPlugin() {
 
   return {
     name: "XHRPlugin",
-    monitor(emit: (data) => void) {
+    observer(emit: (data) => void) {
       if (!window.XMLHttpRequest) return;
       const tracker = this.tracker;
 
@@ -39,7 +39,7 @@ function XHRPlugin() {
         };
       });
     },
-    transform(collectedData) {
+    watcher(collectedData) {
       this.breadcrumb.unshift({
         bt: EventTypes.XHR,
         t: +new Date(),
