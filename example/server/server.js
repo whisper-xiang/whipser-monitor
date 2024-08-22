@@ -76,25 +76,27 @@ app.get("/getRecordScreenId", (req, res) => {
 
 app.post("/reportData", async (req, res) => {
   try {
-    errorList.push("data");
+    // let data = await coBody.json(req);
+    // console.log(data);
+    errorList.push(req.body);
     // req.body 不为空时为正常请求，如录屏信息
-    let length = Object.keys(req.body).length;
-    if (length) {
-      recordScreenList.push(req.body);
-    } else {
-      // 使用 web beacon 上报数据
-      let data = await coBody.json(req);
-      if (!data) return;
-      if (data.type == "performance") {
-        performanceList.push(data);
-      } else if (data.type == "recordScreen") {
-        recordScreenList.push(data);
-      } else if (data.type == "whiteScreen") {
-        whiteScreenList.push(data);
-      } else {
-        errorList.push(data);
-      }
-    }
+    // let length = Object.keys(req.body).length;
+    // if (length) {
+    //   recordScreenList.push(req.body);
+    // } else {
+    //   // 使用 web beacon 上报数据
+    //   let data = await coBody.json(req);
+    //   if (!data) return;
+    //   if (data.type == "performance") {
+    //     performanceList.push(data);
+    //   } else if (data.type == "recordScreen") {
+    //     recordScreenList.push(data);
+    //   } else if (data.type == "whiteScreen") {
+    //     whiteScreenList.push(data);
+    //   } else {
+    //     errorList.push(data);
+    //   }
+    // }
     res.send({
       code: 200,
       meaage: "上报成功！",

@@ -21,7 +21,11 @@ const app = createApp(App);
 // });
 app.use(router);
 app.use(whisperCore, {
-  dsn: "http://localhost:8090",
+  reportOptions: {
+    url: "http://localhost:8090/reportData", // 上报接口配置信息
+    method: "xhr",
+    payloadType: "json",
+  },
 });
 app.use(plugin, { message: "Custom Plugin Initialized!" });
 app.use(ElementPlus);

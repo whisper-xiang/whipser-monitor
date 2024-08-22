@@ -6,7 +6,7 @@ import { Plugin, CoreOptions } from "../types/core";
 import { jsErrorPlugin } from "../plugins/js-error";
 
 export class Core {
-  private readonly options: Options; // 使用 Options 类型
+  private readonly options: CoreOptions;
   private readonly breadcrumb: Breadcrumb;
   public readonly tracker: Tracker;
 
@@ -15,7 +15,7 @@ export class Core {
   constructor(options: CoreOptions) {
     this.options = new Options(options);
     this.breadcrumb = new Breadcrumb(this.options);
-    this.tracker = new Tracker(this.options);
+    this.tracker = new Tracker(this.options, this.breadcrumb);
   }
 
   use(plugins: Plugin[]) {
@@ -43,7 +43,9 @@ export class Core {
 
       const callback = (...args: any[]) => {
         const pluginData = transform.apply(this, args);
-        // this.tracker.send(pluginData, this);
+        this.tracker.report(pluginData).then(() => {
+          console.log("上报成功");
+        });
       };
 
       eventBus.on(name, callback);
@@ -72,10 +74,10 @@ const init = (options: CoreOptions) => {
 const install = (Vue: any, options: CoreOptions) => {
   const client = init(options);
 
-  const originalErrorHandler = Vue.config.errorHandler;
+  // const originalErrorHandler = Vue.config.errorHandler;
 
   // Vue.config.errorHandler = (err: Error, vm: any, info: string) => {
-  //   // const errData = client.jsError.transform(err, vm, info);
+  //   const errData = client.jsErrorPlugin?.transform(err, vm, info);
   //   // client.tracker.send(errData, this);
 
   //   if (originalErrorHandler) {

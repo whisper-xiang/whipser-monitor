@@ -10,4 +10,12 @@ export enum EventTypes {
   VUE,
   CUSTOMER,
   EXTEND,
+  WHITE_SCREEN,
+}
+
+export enum ErrorTypes {
+  RESOURCE_ERROR = 1,
+  JS_ERROR,
+  API_ERROR,
+  UNKNOWN_ERROR,
 }

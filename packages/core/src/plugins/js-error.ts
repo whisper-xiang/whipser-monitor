@@ -1,7 +1,8 @@
-import { EventTypes } from "../types/constant";
+import { EventTypes, ErrorTypes } from "../types/constant";
+import { parseStackFrames } from "../utils/parseErrorStk";
 
 interface CollectedType {
-  category: EventTypes;
+  type: EventTypes;
   data: ErrorEvent;
 }
 
@@ -11,16 +12,17 @@ interface ResourceTarget {
   localName?: string;
 }
 
-export const jsErrorPlugin = (options: any) => {
+export const jsErrorPlugin = (options?) => {
   return {
     name: "jsErrorPlugin",
     monitor(emit: (data: CollectedType) => void) {
       window.addEventListener(
         "error",
         (e: ErrorEvent) => {
+          // preventDefault 会导致报错停止流转
           // e.preventDefault();
           emit({
-            category: EventTypes.ERROR,
+            type: EventTypes.ERROR,
             data: e,
           });
         },
@@ -28,9 +30,9 @@ export const jsErrorPlugin = (options: any) => {
       );
     },
     transform(collectedData: CollectedType) {
-      console.log("监控到了js错误", collectedData);
+      const { stkLimit = 5 } = this.options?.codeErrorOptions;
 
-      const { category, data } = collectedData;
+      const { type, data } = collectedData;
       const { localName, src, href } = (data.target as ResourceTarget) || {};
 
       // 资源加载错误
@@ -40,14 +42,51 @@ export const jsErrorPlugin = (options: any) => {
           href: src || href,
         };
         // 上报用户行为栈
-        this.breadcrumb.unshift({});
-        return {};
+        this.breadcrumb.unshift({
+          type: type,
+          category: ErrorTypes.RESOURCE_ERROR,
+          data: resourceData,
+          msg: `Unable to load "${resourceData.href}"`,
+          t: +new Date(),
+        });
+        return {
+          type: type,
+          category: ErrorTypes.RESOURCE_ERROR,
+          message: `Unable to load "${resourceData.href}"`,
+          resource: resourceData,
+        };
       }
       // 脚本错误
       const { message: msg, error } = data;
       this.breadcrumb.unshift({
-        // t: this.getTime(),
+        type: type,
+        message: msg,
+        stack: error?.stack,
+        resource: {
+          source: localName,
+          href: src || href,
+        },
       });
+
+      const frames = parseStackFrames(error, stkLimit);
+      const stk = frames.map(
+        ({ lineno: lin, colno: col, filename: file, functionName: fn }) => ({
+          lin,
+          col,
+          file,
+          fn,
+        })
+      );
+
+      return {
+        type: EventTypes.ERROR,
+        message: msg,
+        stack: stk,
+        resource: {
+          source: localName,
+          href: src || href,
+        },
+      };
     },
   };
 };
