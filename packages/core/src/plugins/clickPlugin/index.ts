@@ -7,8 +7,6 @@ const clickPlugin = {
   name: "clickPlugin",
   observer(emit: (data: CollectedType) => void) {
     _global.addEventListener("click", (event) => {
-      console.log("click");
-
       emit({
         type: EventTypes.CLICK,
         data: event,
@@ -20,10 +18,6 @@ const clickPlugin = {
     this.breadcrumb.unshift({
       type: type,
     });
-    // return {
-    //   type: EventTypes.CLICK,
-    //   data: data,
-    // };
   },
 };
 

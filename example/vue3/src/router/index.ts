@@ -22,10 +22,9 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL), // 使用HTML5的history模式
-  // history: createWebHashHistory(), // 使用hash模式
+  // history: createWebHistory(import.meta.env.BASE_URL), // 使用HTML5的history模式
+  history: createWebHashHistory(), // 使用hash模式
   routes,
 });
 
-console.log("router");
 export default router;

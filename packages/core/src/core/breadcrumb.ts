@@ -1,7 +1,5 @@
 import { BreadcrumbItem, CoreOptions } from "@whisper/types";
 
-// type BreadcrumbOptions = CoreOptions["breadcrumbOptions"];
-
 export class Breadcrumb {
   private readonly maxBreadcrumbs: number;
   private stack: BreadcrumbItem[] = [];
@@ -12,7 +10,7 @@ export class Breadcrumb {
   }
   /**
    * 添加用户行为栈
-   * @param {BreadcrumbPushData} BreadcrumbItem
+   * @param {BreadcrumbItem} data
    */
   unshift(data: BreadcrumbItem) {
     if (this.stack.length >= this.maxBreadcrumbs) {

@@ -2,14 +2,10 @@ import { Breadcrumb, eventBus, Tracker, Options } from "./src/core";
 import { Plugin, CoreOptions, EventTypes } from "@whisper/types";
 import { isValidPlugin } from "@whisper/utils";
 
-import { jsErrorPlugin, XHRPlugin } from "./src/plugins";
-
 export class Core {
   private readonly breadcrumb: Breadcrumb;
   public readonly tracker: Tracker;
   public readonly options: CoreOptions;
-
-  [key: string]: any;
 
   constructor(options: CoreOptions) {
     this.options = new Options(options);
@@ -17,7 +13,7 @@ export class Core {
     this.tracker = new Tracker(this.options, this.breadcrumb);
   }
 
-  use(plugins: Plugin[]) {
+  public use(plugins: Plugin[]) {
     for (const plugin of plugins) {
       const { name: pluginName, observer, watcher } = plugin || {};
 
@@ -28,8 +24,6 @@ export class Core {
         );
         continue;
       }
-
-      this[pluginName] = plugin;
 
       try {
         observer.call(this, eventBus.emit.bind(eventBus, pluginName));
@@ -46,7 +40,7 @@ export class Core {
           return;
         }
         this.tracker.report(pluginData).then(() => {
-          console.log("上报成功", this.breadcrumb.getStack());
+          console.log("上报成功", this.breadcrumb);
         });
       };
 
@@ -54,24 +48,22 @@ export class Core {
     }
   }
 }
-// 导出 init 方法
+// 导出 init 方法，作为使用入口
 const init = (options: CoreOptions) => {
   const client = new Core(options);
   const { plugins = [] } = client.options;
 
-  client.use([jsErrorPlugin, XHRPlugin, ...plugins]);
-  return client;
+  client.use(plugins);
 };
 
 // 如果通过 install 方式安装，则作为 Vue 插件引入
 const install = (Vue: any, options: CoreOptions) => {
-  const client = init(options);
+  // 1. 初始化core，注册所有插件
+  init(options);
 
   const originalErrorHandler = Vue.config.errorHandler;
 
   Vue.config.errorHandler = (err: Error, vm: any, info: string) => {
-    console.log(eventBus.deps, client);
-
     eventBus.emit("jsErrorPlugin", { type: EventTypes.ERROR, data: err });
 
     if (originalErrorHandler) {

@@ -10,4 +10,5 @@ export interface Plugin {
 export interface CollectedType {
   type: EventTypes;
   data: ErrorEvent | MouseEvent | any;
+  [key: string]: any;
 }

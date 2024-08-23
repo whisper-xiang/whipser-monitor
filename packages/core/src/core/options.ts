@@ -1,7 +1,14 @@
 import { validateOption } from "@whisper/utils";
 import { Plugin, CoreOptions } from "@whisper/types";
+import {
+  clickPlugin,
+  XHRPlugin,
+  jsErrorPlugin,
+  promiseErrorPlugin,
+  hashPlugin,
+  historyPlugin,
+} from "../plugins";
 
-import { clickPlugin, XHRPlugin } from "../plugins";
 export class Options {
   reportOptions: CoreOptions["reportOptions"] = {
     url: "http://localhost:8090/reportData", // 上报接口地址
@@ -15,7 +22,14 @@ export class Options {
   breadcrumbOptions?: CoreOptions["breadcrumbOptions"] = {
     maxBreadcrumbs: 100, // 面包屑最大层级
   };
-  plugins: Plugin[] = [clickPlugin];
+  plugins: Plugin[] = [
+    clickPlugin,
+    XHRPlugin,
+    jsErrorPlugin,
+    promiseErrorPlugin,
+    hashPlugin,
+    historyPlugin,
+  ];
 
   constructor(options: CoreOptions) {
     const { reportOptions, plugins } = options;
