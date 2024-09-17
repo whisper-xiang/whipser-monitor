@@ -1,6 +1,7 @@
 import { Breadcrumb, eventBus, Tracker, Options } from "./src/core";
 import { Plugin, CoreOptions, EventTypes } from "@whisper/types";
 import { isValidPlugin } from "@whisper/utils";
+import {} from './'
 
 export class Core {
   private readonly breadcrumb: Breadcrumb;
@@ -54,22 +55,34 @@ const init = (options: CoreOptions) => {
   const { plugins = [] } = client.options;
 
   client.use(plugins);
+  return client;
 };
 
 // 如果通过 install 方式安装，则作为 Vue 插件引入
-const install = (Vue: any, options: CoreOptions) => {
+const install = (VueOrApp: any, options: CoreOptions) => {
   // 1. 初始化core，注册所有插件
-  init(options);
+ const core =  init(options);
 
-  const originalErrorHandler = Vue.config.errorHandler;
+  const originalErrorHandler = VueOrApp.config.errorHandler;
 
-  Vue.config.errorHandler = (err: Error, vm: any, info: string) => {
+  VueOrApp.config.errorHandler = (err: Error, vm: any, info: string) => {
     eventBus.emit("jsErrorPlugin", { type: EventTypes.ERROR, data: err });
 
     if (originalErrorHandler) {
       originalErrorHandler.call(this, err, vm, info);
     }
   };
+
+  // 检查是否为 Vue 3 的 App 对象
+  const isVue3 = VueOrApp.version && VueOrApp.version.startsWith('3');
+
+  if (isVue3) {
+    // Vue 3 逻辑
+    VueOrApp.config.globalProperties.$tracker = core.tracker;
+  } else {
+    // Vue 2 逻辑
+    VueOrApp.prototype.$tracker = core.tracker;
+  }
 };
 
 export default {

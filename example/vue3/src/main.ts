@@ -1,12 +1,12 @@
 import { createApp } from "vue";
 import "./style.css";
 import App from "./App.vue";
-import screenRecord from "../../../packages/screenRecord/src/index";
+// import screenRecord from "../../../packages/screenRecord/src/index";
 import router from "./router";
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 import whisperCore from "../../../packages/core";
-import plugin from "./plugins/MyPlugin";
+// import plugin from "./plugins/MyPlugin";
 
 const app = createApp(App);
 
@@ -27,6 +27,8 @@ app.use(whisperCore, {
     payloadType: "json",
   },
 });
-app.use(plugin, { message: "Custom Plugin Initialized!" });
+console.log(app.config.globalProperties);
+
+// app.use(plugin, { message: "Custom Plugin Initialized!" });
 app.use(ElementPlus);
 app.mount("#app");
