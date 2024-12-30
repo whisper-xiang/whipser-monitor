@@ -1,7 +1,6 @@
 import { Breadcrumb, eventBus, Tracker, Options } from "./src/core";
 import { Plugin, CoreOptions, EventTypes } from "@whisper/types";
 import { isValidPlugin } from "@whisper/utils";
-import {} from './'
 
 export class Core {
   private readonly breadcrumb: Breadcrumb;
@@ -18,7 +17,7 @@ export class Core {
     for (const plugin of plugins) {
       const { name: pluginName, observer, watcher } = plugin || {};
 
-      // 验证插件的有效性
+      // validate plugin
       if (!isValidPlugin(pluginName, observer, watcher)) {
         console.error(
           `The plugin name [${pluginName}] is invalid, please check it.`
@@ -28,14 +27,14 @@ export class Core {
 
       try {
         observer.call(this, eventBus.emit.bind(eventBus, pluginName));
-      } catch (error) {
+      } catch (error: any) {
         console.error(
           `The plugin [${pluginName}] encountered an error: ${error.message}`
         );
         continue;
       }
 
-      const callback = (...args: any[]) => {
+      const callback = (...args: any) => {
         const pluginData = watcher.apply(this, args);
         if (!pluginData) {
           return;
@@ -49,7 +48,7 @@ export class Core {
     }
   }
 }
-// 导出 init 方法，作为使用入口
+// export init method, as entry point
 const init = (options: CoreOptions) => {
   const client = new Core(options);
   const { plugins = [] } = client.options;
@@ -58,10 +57,10 @@ const init = (options: CoreOptions) => {
   return client;
 };
 
-// 如果通过 install 方式安装，则作为 Vue 插件引入
+// if install by install method, then as Vue plugin
 const install = (VueOrApp: any, options: CoreOptions) => {
-  // 1. 初始化core，注册所有插件
- const core =  init(options);
+  // 1. init core, register all plugins
+  const core = init(options);
 
   const originalErrorHandler = VueOrApp.config.errorHandler;
 
@@ -73,8 +72,8 @@ const install = (VueOrApp: any, options: CoreOptions) => {
     }
   };
 
-  // 检查是否为 Vue 3 的 App 对象
-  const isVue3 = VueOrApp.version && VueOrApp.version.startsWith('3');
+  // 2. bind tracker to Vue instance
+  const isVue3 = VueOrApp.version && VueOrApp.version.startsWith("3");
 
   if (isVue3) {
     // Vue 3 逻辑

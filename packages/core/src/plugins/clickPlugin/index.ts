@@ -7,6 +7,7 @@ const clickPlugin = {
   name: "clickPlugin",
   observer(emit: (data: CollectedType) => void) {
     _global.addEventListener("click", (event) => {
+      console.log("clickPlugin", event);
       emit({
         type: EventTypes.CLICK,
         data: event,

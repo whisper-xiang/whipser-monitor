@@ -6,6 +6,7 @@ import router from "./router";
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 import whisperCore from "../../../packages/core";
+import { clickPlugin, XHRPlugin } from "../../../packages/core/src/plugins";
 // import plugin from "./plugins/MyPlugin";
 
 const app = createApp(App);
@@ -26,8 +27,8 @@ app.use(whisperCore, {
     method: "xhr",
     payloadType: "json",
   },
+  plugins: [clickPlugin, XHRPlugin],
 });
-console.log(app.config.globalProperties);
 
 // app.use(plugin, { message: "Custom Plugin Initialized!" });
 app.use(ElementPlus);
